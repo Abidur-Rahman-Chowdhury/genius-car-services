@@ -7,6 +7,7 @@ import SocialLogin from '../SocialLogin/SocialLogin';
 import { ToastContainer, toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 const Login = () => {
   const emailRef = useRef('');
@@ -21,11 +22,14 @@ const Login = () => {
       errorElement = <p className="text-danger text-center">{ error?.message}</p>
       
     }
-  const handelSubmit = (e) => {
+  const handelSubmit = async (e) => {
     e.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
-    signInWithEmailAndPassword(email, password);
+    await signInWithEmailAndPassword(email, password);
+    const { data } = await axios.post('http://localhost:5000/login', { email });
+    localStorage.setItem('accessToken', data.accessToken);
+    navigate(from, { replace: true });
     console.log(email, password);
   };
   const [sendPasswordResetEmail, sending] = useSendPasswordResetEmail(auth);
@@ -41,7 +45,7 @@ const Login = () => {
     
   }
   if (user) {
-    navigate(from, { replace: true });
+    // navigate(from, { replace: true });
   }
   return (
     <div className="container w-50 mx-auto">

@@ -4,13 +4,15 @@ import facebook from '../../../images/social-icon/facebook.png';
 import github from '../../../images/social-icon/github.png';
 import auth from '../../../firebase.init';
 import { useSignInWithGithub, useSignInWithGoogle } from 'react-firebase-hooks/auth';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Loading from '../../Shared/Loading/Loading';
 
 const SocialLogin = () => {
   const [signInWithGoogle,user, error ,loading] = useSignInWithGoogle(auth);
   const [signInWithGithub,user1,error1 ,loading1] = useSignInWithGithub(auth);
   const navigate = useNavigate();
+  const location = useLocation();
+  let from = location.state?.from?.pathname || '/';
   let errorElement;
   if (error || error1) {
     errorElement = <p className="text-danger text-center">{ error?.message} {error1?.message}</p>
@@ -21,7 +23,7 @@ const SocialLogin = () => {
   }
 
   if (user || user1) {
-    navigate('/home');
+    navigate(from, { replace: true });
   }
   return (
     <div>
